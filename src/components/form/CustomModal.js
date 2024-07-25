@@ -1,11 +1,10 @@
 import React from 'react';
 import { Modal, Button } from 'antd';
 import styled from 'styled-components';
+import '../../app/globals.css'
 
 const StyledModal = styled(Modal)`
-
-
-`
+`;
 
 const CustomModal = ({
   visible,
@@ -16,8 +15,14 @@ const CustomModal = ({
   cancelButtonVisible = true,
   children,
   width,
-  height
+  height,
+  max
 }) => {
+
+  const modalClass = max ? 'max-content-width' : '';
+
+
+  
   return (
     <StyledModal
       open={visible}
@@ -28,6 +33,7 @@ const CustomModal = ({
         okButtonVisible && <Button key="ok" type="primary" onClick={onOk}>OK</Button>,
         cancelButtonVisible && <Button key="cancel" onClick={onCancel}>Cancel</Button>
       ]}
+      className={modalClass}
       width={width}
       style={{ height: height }}
     >

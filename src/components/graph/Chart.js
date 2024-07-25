@@ -106,8 +106,8 @@ const Chart = ({ type = 'bar', data = [], barSize }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [chartType, setChartType] = useState(type);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [modalWidth, setModalWidth] = useState(700);
-  const [modalHeight, setModalHeight] = useState(488);
+  const [modalWidth, setModalWidth] = useState(800);
+  const [modalHeight, setModalHeight] = useState(500);
 
   const handleChartClick = () => {
     setChartType(type);
@@ -244,12 +244,13 @@ const Chart = ({ type = 'bar', data = [], barSize }) => {
         title={`${chartType.charAt(0).toUpperCase() + chartType.slice(1)} Chart`}
         width={modalWidth}
         height={modalHeight}
+        max={'max-width'}
       >
         <StyledResizableBox
           width={modalWidth}
           height={modalHeight}
           minConstraints={[200, 200]}
-          maxConstraints={[700, 488]}
+          maxConstraints={[1000, 500]}
           onResize={onResize}
           resizeHandles={['se']}
         >

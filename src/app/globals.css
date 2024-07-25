@@ -24,14 +24,15 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
-}
+
+  }
+  
+  .max-content-width {
+    width: max-content !important;
+  }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
-  }
-
-  .ant-modal .ant-modal-content{
-    width: max-content !important;
   }
 }

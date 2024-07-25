@@ -20,7 +20,6 @@ const CustomLabel = styled.label`
       margin-left:5px;
       padding-left:2px;
   }`}
-  
   span {
     font-weight: 400;
   }

@@ -23,5 +23,6 @@ const CustomLabel = styled.label`
   span {
     font-weight: 400;
   }
+  
 `
 export default CustomLabel

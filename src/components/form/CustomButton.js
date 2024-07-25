@@ -2,7 +2,6 @@ import React from 'react';
 import { Button } from 'antd';
 import styled from 'styled-components';
 
-// Styled button (optional for custom styling)
 const StyledButton = styled(Button)`
   &&& {
     width: ${(props) => (props.block ? '100%' : 'auto')};

@@ -35,7 +35,6 @@ width: 100%;
 height: 100%;
 `;
 
-// Suppress Recharts deprecation warnings
 const suppressedWarnings = /defaultProps will be removed/;
 const originalConsoleError = console.error;
 console.error = function (message) {
@@ -45,7 +44,6 @@ console.error = function (message) {
   originalConsoleError.apply(console, arguments);
 };
 
-// Helper function to render the active shape in the Pie chart
 const renderActiveShape = (props) => {
   const RADIAN = Math.PI / 180;
   const {
@@ -115,7 +113,6 @@ const Chart = ({ type = 'bar', data = [], barSize }) => {
     setChartType(type);
     setIsModalVisible(true);
   };
-  //called
 
   const handleModalOk = () => {
     setIsModalVisible(false);

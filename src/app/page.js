@@ -134,19 +134,24 @@ const areaData = [
       <h1>Charts Example</h1>
       <div style={{ marginBottom: '20px' }}>
         <h2>Bar Chart</h2>
-        <Chart type="bar" data={barData} barSize={20} />
+        <Chart type="bar" data={barData || []} barSize={20} />
       </div>
       <div style={{ marginBottom: '20px' }}>
         <h2>Pie Chart</h2>
-        <Chart type="pie" data={pieData} />
+        <Chart type="pie" data={pieData || []} />
       </div>
       <div style={{ marginBottom: '20px' }}>
         <h2>Line Chart</h2>
-        <Chart type="line" data={lineData} />
+        <Chart type="line" data={lineData || []} />
       </div>
       <div style={{ marginBottom: '20px' }}>
         <h2>Area Chart</h2>
-        <Chart type="area" data={areaData} />
+        <Chart type="area" data={areaData || []} />
+      </div>
+
+      <div style={{ marginBottom: '20px' }}>
+        <h2>Area Chart</h2>
+        <Chart type="sticky-bar" data={areaData || []} />
       </div>
     </div>
     </main>

@@ -20,7 +20,20 @@
 //   Area
 // } from 'recharts';
 // import CustomModal from '../form/CustomModal';
+// import { ResizableBox } from 'react-resizable';
+// import 'react-resizable/css/styles.css';
+// import styled from 'styled-components';
 
+// const StyledResizableBox = styled(ResizableBox)`
+//     position: relative;
+//     margin: 0;
+//     padding: 10px 10px;
+//   `;
+
+// const ChartContainer = styled.div`
+// width: 100%;
+// height: 100%;
+// `;
 // // Suppress Recharts deprecation warnings
 // const suppressedWarnings = /defaultProps will be removed/;
 // const originalConsoleError = console.error;
@@ -94,9 +107,11 @@
 //   const [isModalVisible, setIsModalVisible] = useState(false);
 //   const [chartType, setChartType] = useState(type);
 //   const [activeIndex, setActiveIndex] = useState(0);
+//   const [modalWidth, setModalWidth] = useState(700);
+//   const [modalHeight, setModalHeight] = useState(488);
 
 //   const handleChartClick = () => {
-//     setChartType(type); // Store the current chart type
+//     setChartType(type);
 //     setIsModalVisible(true);
 //   };
 
@@ -122,6 +137,11 @@
 
 //   const handlePieMouseLeave = () => {
 //     setActiveIndex(-1);
+//   };
+
+//   const onResize = (event, { size }) => {
+//     setModalWidth(size.width);
+//     setModalHeight(size.height);
 //   };
 
 //   const renderChart = (type) => {
@@ -151,22 +171,20 @@
 //         );
 //       case 'pie':
 //         return (
-//           <ResponsiveContainer width="100%" height={400}>
-//             <PieChart width={400} height={400}>
-//               <Pie
-//                 activeIndex={activeIndex}
-//                 activeShape={renderActiveShape}
-//                 data={data}
-//                 cx="50%"
-//                 cy="50%"
-//                 innerRadius={60}
-//                 outerRadius={80}
-//                 fill="#8884d8"
-//                 dataKey="value"
-//                 onMouseEnter={handlePieMouseEnter}
-//               />
-//             </PieChart>
-//           </ResponsiveContainer>
+//           <PieChart width={400} height={400}>
+//             <Pie
+//               activeIndex={activeIndex}
+//               activeShape={renderActiveShape}
+//               data={data}
+//               cx="50%"
+//               cy="50%"
+//               innerRadius={60}
+//               outerRadius={80}
+//               fill="#8884d8"
+//               dataKey="value"
+//               onMouseEnter={handlePieMouseEnter}
+//             />
+//           </PieChart>
 //         );
 //       case 'line':
 //         return (
@@ -209,10 +227,23 @@
 //         onOk={handleModalOk}
 //         onCancel={handleModalCancel}
 //         title={`${chartType.charAt(0).toUpperCase() + chartType.slice(1)} Chart`}
+//         width={modalWidth}
+//         height={modalHeight}
 //       >
-//         <ResponsiveContainer width="100%" height={400}>
-//           {renderChart(chartType)}
-//         </ResponsiveContainer>
+//         <StyledResizableBox
+//           width={modalWidth}
+//           height={modalHeight}
+//           minConstraints={[200, 200]}
+//           maxConstraints={[700, 488]}
+//           onResize={onResize}
+//           resizeHandles={['se']}
+//         >
+//           <ChartContainer>
+//             <ResponsiveContainer width="100%" height="100%">
+//               {renderChart(chartType)}
+//             </ResponsiveContainer>
+//           </ChartContainer>
+//         </StyledResizableBox>
 //       </CustomModal>
 //     </>
 //   );
@@ -221,15 +252,12 @@
 // export default Chart;
 
 
-
-'use client';
-
-
 import React, { useState } from 'react';
 import {
   BarChart,
   Bar,
   Cell,
+  Rectangle,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -253,13 +281,14 @@ import styled from 'styled-components';
 const StyledResizableBox = styled(ResizableBox)`
     position: relative;
     margin: 0;
-    padding: 17px 40px;
-  `;
+    padding: 10px 10px;
+`;
 
 const ChartContainer = styled.div`
 width: 100%;
 height: 100%;
 `;
+
 // Suppress Recharts deprecation warnings
 const suppressedWarnings = /defaultProps will be removed/;
 const originalConsoleError = console.error;
@@ -333,11 +362,11 @@ const Chart = ({ type = 'bar', data = [], barSize }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [chartType, setChartType] = useState(type);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [modalWidth, setModalWidth] = useState(1000);
-  const [modalHeight, setModalHeight] = useState(500);
+  const [modalWidth, setModalWidth] = useState(700);
+  const [modalHeight, setModalHeight] = useState(488);
 
   const handleChartClick = () => {
-    setChartType(type); // Store the current chart type
+    setChartType(type);
     setIsModalVisible(true);
   };
 
@@ -395,6 +424,22 @@ const Chart = ({ type = 'bar', data = [], barSize }) => {
             </Bar>
           </BarChart>
         );
+      case 'sticky-bar':
+        return (
+          <BarChart data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="pv" fill="#8884d8" />
+            <Bar
+              dataKey="uv"
+              fill="#82ca9d"
+              activeBar={<Rectangle fill="gold" stroke="purple" />}
+            />
+          </BarChart>
+        );
       case 'pie':
         return (
           <PieChart width={400} height={400}>
@@ -439,8 +484,6 @@ const Chart = ({ type = 'bar', data = [], barSize }) => {
     }
   };
 
-
-
   return (
     <>
       <div onClick={handleChartClick} style={{ cursor: 'pointer' }}>
@@ -455,24 +498,14 @@ const Chart = ({ type = 'bar', data = [], barSize }) => {
         onOk={handleModalOk}
         onCancel={handleModalCancel}
         title={`${chartType.charAt(0).toUpperCase() + chartType.slice(1)} Chart`}
-        style={{ maxWidth: '1200px' }}
+        width={modalWidth}
+        height={modalHeight}
       >
-        {/* <ResizableBox
-          width={470}
-          height={400} 
-          minConstraints={[200, 200]} 
-          maxConstraints={[1000, 600]} 
-          style={{ width: '100%', height: '100%' }}
-        >
-          <ResponsiveContainer width="100%" height="100%">
-            {renderChart(chartType)}
-          </ResponsiveContainer>
-        </ResizableBox> */}
         <StyledResizableBox
           width={modalWidth}
           height={modalHeight}
-          minConstraints={[400, 300]}
-          maxConstraints={[1000, 600]}
+          minConstraints={[200, 200]}
+          maxConstraints={[700, 488]}
           onResize={onResize}
           resizeHandles={['se']}
         >

@@ -1,0 +1,17 @@
+.card-tiles{
+  border: solid 1px #7a7a7a;
+}
+.card-tiles:hover{
+  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+}
+.shift-headings{
+  margin-left: 40px;
+  margin-top: 20px;
+  font-weight: 600;
+}
+.ant-flex-tile{
+  display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}

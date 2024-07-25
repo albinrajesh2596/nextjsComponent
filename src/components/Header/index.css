@@ -1,0 +1,8 @@
+.header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #0C418B;
+    height: 48px;
+}
+.search-header{display: flex;}

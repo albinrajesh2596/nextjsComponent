@@ -168,14 +168,16 @@ const Resource = ({id}) => {
   const renamedResourceList = resource.map(data => ({
     ...data,
     name: data.resourceName,
-    shiftName: undefined,
+    resourceName: undefined,
+    id: data.resourceId,
+    resourceId: undefined,
   }))
 
   const getShitName = initialShiftList.filter(
     sId => sId.shiftId == id.resourceId,
   )
   const inputJson = {
-    pathName: 'chart',
+    pathName: 'graph',
   }
 
   return (

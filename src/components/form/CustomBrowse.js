@@ -104,7 +104,7 @@ export const CustomBrowse = ({ uiConfig }) => {
           if (data.length > 0) {
             const keys = Object.keys(data[0]);
             const newColumns = keys
-              .filter(key => key !== 'key') // Exclude 'key' column
+              .filter(key => key !== 'key') 
               .map(key => ({
                 title: key.charAt(0).toUpperCase() + key.slice(1),
                 dataIndex: key,
@@ -138,9 +138,6 @@ export const CustomBrowse = ({ uiConfig }) => {
 
   const handleRowSelectionChange = (selectedRowKeys, selectedRows) => {
     setSelectedRowKeys(selectedRowKeys);
-    // setRowValue(selectedRows);
-
-    // Update inputValue based on selected rows
     if (uiConfig.multiSelect) {
       setSelectedValue(selectedRows.map(row => row.name));
       setInputValue(selectedRows.map(row => row.name).join(', '));

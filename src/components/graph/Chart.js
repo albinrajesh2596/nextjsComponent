@@ -369,6 +369,7 @@ const Chart = ({ type = 'bar', data = [], barSize }) => {
     setChartType(type);
     setIsModalVisible(true);
   };
+  //called
 
   const handleModalOk = () => {
     setIsModalVisible(false);

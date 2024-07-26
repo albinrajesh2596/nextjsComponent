@@ -23,6 +23,7 @@ import CustomModal from '../form/CustomModal';
 import { ResizableBox } from 'react-resizable';
 import 'react-resizable/css/styles.css';
 import styled from 'styled-components';
+import CustomLabel from '../form/CustomLabel';
 
 const StyledResizableBox = styled(ResizableBox)`
     position: relative;
@@ -102,7 +103,7 @@ const renderActiveShape = (props) => {
   );
 };
 
-const Chart = ({ type = 'bar', data = [], barSize }) => {
+const Chart = ({ type = 'bar', data = [], barSize, label }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [chartType, setChartType] = useState(type);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -232,6 +233,9 @@ const Chart = ({ type = 'bar', data = [], barSize }) => {
     <>
       <div onClick={handleChartClick} style={{ cursor: 'pointer' }}>
         <ResponsiveContainer width="100%" height={300}>
+          <CustomLabel style={{paddingLeft:'25px', fontSize:'20px'}}>
+          {label}
+          </CustomLabel>
           {renderChart(type)}
         </ResponsiveContainer>
       </div>

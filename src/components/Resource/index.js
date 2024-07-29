@@ -88,7 +88,7 @@ const Resource = ({id}) => {
       availability: 88.0,
       performance: 90.0,
       quality: 97.0,
-      isMachineAvailable: true,
+      isMachineAvailable: 'true',
     },
     ,
     {
@@ -180,16 +180,26 @@ const Resource = ({id}) => {
     pathName: 'graph',
   }
 
+  const updatedData = resource.map(each => ({
+    'id': each.id,
+    'Resource Name': each.resourceName,
+    'Resource Type' : each.resourceType,
+    "Oee": each.oee,
+      "Availability": each.availability,
+      "Performance": each.performance,
+      "Quality": each.quality,
+    
+  }))
+
   return (
     <>
       <Header />
       <div className="main-container" style={{padding: '20px'}}>
         <h1 className="shift-headings">{getShitName[0].shiftName}</h1>
         <Flex gap="middle" align="start" vertical className="ant-flex-tile">
-          {renamedResourceList.map(data => (
+          {updatedData.map(data => (
             <DynamicTile
-              key={data.resourceId} jsonData={{...inputJson, tilesData: data}}
-            />
+              key={data.resourceId} jsonDatas={{ ...inputJson,tilesData: data}} />
           ))}
         </Flex>
       </div>

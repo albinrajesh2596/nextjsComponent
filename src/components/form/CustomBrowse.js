@@ -1,5 +1,3 @@
-'use client'
-
 import React, { Fragment, useState, useEffect } from 'react';
 import { Input as AntdInput, Form } from 'antd';
 import axios from 'axios';
@@ -8,7 +6,6 @@ import CustomModal from './CustomModal';
 import CustomTable from './CustomTable';
 import styled from 'styled-components';
 import { GrChapterAdd } from "react-icons/gr";
-// jana
 
 const { Item } = Form;
 
@@ -79,9 +76,8 @@ const AntdInputStyle = styled(AntdInput)`
 
 export const CustomBrowse = ({ uiConfig }) => {
   const [modalOpen, setModalOpen] = useState(false);
-  const [selectedValue, setSelectedValue] = useState([]);
+  const [selectedValues, setSelectedValues] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-  const [rowValue, setRowValue] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const [isReadOnly, setIsReadOnly] = useState(false);
   const [tableData, setTableData] = useState([]);
@@ -105,7 +101,7 @@ export const CustomBrowse = ({ uiConfig }) => {
           if (data.length > 0) {
             const keys = Object.keys(data[0]);
             const newColumns = keys
-              .filter(key => key !== 'key') 
+              .filter(key => key !== 'id')
               .map(key => ({
                 title: key.charAt(0).toUpperCase() + key.slice(1),
                 dataIndex: key,
@@ -121,14 +117,9 @@ export const CustomBrowse = ({ uiConfig }) => {
 
   const handleOk = () => {
     if (uiConfig.okButtonVisible) {
-      if (selectedValue.length > 0) {
-        setInputValue(selectedValue.join(', '));
-      } else {
-        setInputValue('');
-      }
       setIsReadOnly(true);
       setModalOpen(false);
-
+      setInputValue(selectedValues.join(', '));
       rowSelectApiCall();
     }
   };
@@ -139,13 +130,12 @@ export const CustomBrowse = ({ uiConfig }) => {
 
   const handleRowSelectionChange = (selectedRowKeys, selectedRows) => {
     setSelectedRowKeys(selectedRowKeys);
-    if (uiConfig.multiSelect) {
-      setSelectedValue(selectedRows.map(row => row.name));
-      setInputValue(selectedRows.map(row => row.name).join(', '));
-    } else {
-      setSelectedValue(selectedRows.length > 0 ? [selectedRows[0].name] : []);
-      setInputValue(selectedRows.length > 0 ? selectedRows[0].name : '');
-    }
+
+    const nextKey = Object.keys(selectedRows[0] || {}).find(key => key !== 'id');
+    const newValues = selectedRows.map(row => row[nextKey] || '');
+
+    setSelectedValues(newValues);
+    setInputValue(newValues.join(', '));
 
     if (uiConfig.selectEventCall) {
       rowSelectApiCall();
@@ -153,8 +143,36 @@ export const CustomBrowse = ({ uiConfig }) => {
     }
   };
 
+  const handleRowSelect = (id, value) => {
+    const selectedRow = tableData.find(row => row.id === id);
+    const nextKey = Object.keys(selectedRow || {}).find(key => key !== 'id');
+
+    if (uiConfig.multiSelect) {
+      // Multi-select logic
+      const newValues = [...selectedValues];
+      const valueToAdd = selectedRow[nextKey] || '';
+
+      if (!newValues.includes(valueToAdd)) {
+        newValues.push(valueToAdd);
+      } else {
+        // If already included, remove it
+        const index = newValues.indexOf(valueToAdd);
+        if (index > -1) {
+          newValues.splice(index, 1);
+        }
+      }
+
+      setSelectedValues(newValues);
+      setInputValue(newValues.join(', '));
+    } else {
+      // Single-select logic
+      setSelectedValues([selectedRow[nextKey] || '']);
+      setInputValue(selectedRow[nextKey] || '');
+    }
+  };
+
   const rowSelectApiCall = () => {
-    console.log(`API called`);
+    console.log('API called');
   };
 
   const rowSelection = {
@@ -189,10 +207,11 @@ export const CustomBrowse = ({ uiConfig }) => {
         cancelButtonVisible={uiConfig.cancelButtonVisible}
       >
         <CustomTable
-          dataSource={tableData} 
-          columns={columns} 
+          dataSource={tableData}
+          columns={columns}
           uiConfig={uiConfig}
           rowSelection={rowSelection}
+          onRowSelect={handleRowSelect}
         />
       </CustomModal>
     </StyledItem>

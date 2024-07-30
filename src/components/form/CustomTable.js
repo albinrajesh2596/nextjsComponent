@@ -1,65 +1,79 @@
 import React from 'react';
-import { Table, Input, Button } from 'antd';
+import { Table, Input } from 'antd';
 
 const CustomTable = ({
   dataSource,
   columns,
-  uiConfig,
   rowSelection,
+  onRowSelect,
+  uiConfig
 }) => {
-  const enhancedColumns = columns.map(column => ({
-    ...column,
-    ...(uiConfig.filtering && {
-      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, close }) => (
-        <div style={{ padding: 8 }}>
-          <Input
-            placeholder={`Search ${column.title}`}
-            value={selectedKeys[0]}
-            onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-            onPressEnter={() => {
-              confirm();
-              close();
-            }}
-            style={{ width: 188, marginBottom: 8, display: 'block' }}
-          />
-          <Button
-            type="primary"
-            onClick={() => {
-              confirm();
-              close();
-            }}
-            size="small"
-            style={{ width: 90, marginRight: 8 }}
-          >
-            Search
-          </Button>
-        </div>
-      ),
-      onFilter: (value, record) =>
-        record[column.dataIndex]
-          .toString()
-          .toLowerCase()
-          .includes(value.toLowerCase()),
-    }),
-    ...(uiConfig.sorting && {
-      sorter: (a, b) => {
-        if (typeof a[column.dataIndex] === 'string' && typeof b[column.dataIndex] === 'string') {
-          return a[column.dataIndex].localeCompare(b[column.dataIndex]);
-        }
-        return a[column.dataIndex] - b[column.dataIndex];
-      },
-    }),
-  }));
+  const handleRowClick = (record) => {
+    const { selectedRowKeys, onChange } = rowSelection;
+    const isSelected = selectedRowKeys.includes(record.id);
+
+    if (uiConfig.multiSelect) {
+      // Multi-select logic
+      const newSelectedRowKeys = isSelected
+        ? selectedRowKeys.filter(key => key !== record.id)
+        : [...selectedRowKeys, record.id];
+
+      const newSelectedRows = dataSource.filter(row => newSelectedRowKeys.includes(row.id));
+      onChange(newSelectedRowKeys, newSelectedRows);
+
+      const nextKey = Object.keys(record).find(key => key !== 'id');
+      const newValues = newSelectedRows.map(row => row[nextKey] || '');
+      onRowSelect(record.id, newValues.join(', '));
+    } else {
+      // Single-select logic
+      const newSelectedRowKeys = isSelected
+        ? []
+        : [record.id];
+      
+      const newSelectedRows = isSelected
+        ? []
+        : [record];
+
+      onChange(newSelectedRowKeys, newSelectedRows);
+      onRowSelect(newSelectedRowKeys[0], newSelectedRows.length > 0 ? newSelectedRows[0] : null);
+    }
+  };
+
+  const enhancedColumns = columns.reduce((acc, col) => {
+    if (col.dataIndex === 'id') {
+      acc.push(col);
+      const nextKey = columns.find(column => column.dataIndex !== 'id')?.dataIndex;
+      if (nextKey) {
+        acc.push({
+          title: 'Value',
+          dataIndex: nextKey,
+          render: (text, record) => (
+            <Input
+              defaultValue={record[nextKey]}
+              onChange={(e) => onRowSelect(record.id, e.target.value)}
+            />
+          ),
+        });
+      }
+    } else {
+      acc.push(col);
+    }
+    return acc;
+  }, []);
 
   return (
     <Table
       columns={enhancedColumns}
       dataSource={dataSource}
-      rowSelection={rowSelection}
-      rowKey={(record) => record.key}
+      rowSelection={{ type: uiConfig.multiSelect ? 'checkbox' : 'radio', ...rowSelection }}
+      rowKey={(record) => record.id}
       pagination={uiConfig.pagination}
+      onRow={(record) => ({
+        onClick: () => handleRowClick(record),
+      })}
     />
   );
 };
 
 export default CustomTable;
+

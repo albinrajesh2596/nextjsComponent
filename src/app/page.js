@@ -1,10 +1,10 @@
 'use client'
 
-import Shift from '@/components/Shift';
+import ShiftList from '@/components/Shift';
 import React from 'react';
 
 export default function Home() {
   return (
-    <Shift/>
+    <ShiftList/>
   );
 }

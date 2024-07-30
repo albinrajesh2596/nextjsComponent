@@ -50,7 +50,7 @@ const MyComponent = ({initialplate}) => {
       </Form>
       <Modal
         title="Select MFR"
-        visible={modalVisible}
+        open={modalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
       >
